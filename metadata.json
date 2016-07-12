@@ -1,0 +1,22 @@
+{
+  "author": "Bruno Furtado",
+  "checksums": {
+    "README.markdown": "8f22ee51e31773c77c49741e67057d1d",
+    "Modulefile": "735c09b2d42c2528f9e2320e1f52a188",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "manifests/init.pp": "e491ce4c8f194df2fa2ffb86d46627aa",
+    "manifests/params.pp": "e1d84ed984c4874a2264c1fc962015c2",
+    "tests/init.pp": "fdbdfff5439d001d4661a70c70fb6cc3"
+  },
+  "dependencies": [],
+  "description": "",
+  "license": "",
+  "name": "brunofurtado-squid",
+  "project_page": "",
+  "source": "",
+  "summary": "",
+  "types": [],
+  "version": "0.1.0"
+}

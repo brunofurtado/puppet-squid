@@ -1,0 +1,137 @@
+## THIS FILE IS MANAGED BY PUPPET.
+## DO NOT EDIT.
+
+<% @http_port.each do |line| %>
+http_port <%= line %>
+<% end -%>
+snmp_port <%= @snmp_port %>
+<% @icp_port.each do |line| %>
+icp_port  <%= line %>
+<% end -%>
+htcp_port <%= @htcp_port %>
+
+<% @ssl_ports.each do |line| %>
+acl SSL_ports port <%= line %>
+<% end -%>
+
+<% @safe_ports.each do |line| %>
+acl Safe_ports port <%= line %>
+<% end -%>
+
+acl localhost src <%= ipaddress_enp3s2f0 %>/32 <% ipaddress_enp3s2f1 %>/32
+acl dst_localhost dst 127.0.0.1/8
+acl purge method PURGE
+acl CONNECT method CONNECT
+acl POST method POST
+##########acl apache rep_header Server ^Apache
+acl QUERY urlpath_regex cgi-bin aspx \?
+acl webmanager src 10.2.212.40/32
+acl http proto http
+acl ftp proto ftp
+
+<% @acl.each do |line| %>
+acl <%= line %>
+<% end -%>
+
+<% @http_access.each do |line| %>
+http_access <%= line %>
+<% end -%>
+
+<% @http_reply_access.each do |line| %>
+http_reply_access <%= line %>
+<% end -%>
+
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access deny all
+htcp_access deny all
+icp_access allow proxies
+icp_access deny all
+
+always_direct allow ftp
+
+url_rewrite_program /usr/bin/squidGuard -c /etc/squid/squidGuard.conf
+url_rewrite_children 20 startup=4 idle=1 concurrency=0
+url_rewrite_access 
+
+<% @deny_info.each do |line| %>
+deny_info <%= line %>
+<% end -%>
+
+follow_x_forwarded_for allow localhost
+
+
+<% @ip_servers.each do |line| %>
+
+  <% if @ipaddress_eth1 != line -%>
+cache_peer <%= line %> sibling 8080 3130 proxy-only
+  <% end -%>
+
+<% end -%>
+
+dead_peer_timeout 5 seconds
+hierarchy_stoplist cgi-bin ?
+
+cache_mem <%= @cache_mem %>
+maximum_object_size_in_memory 2 MB
+memory_replacement_policy heap GDSF
+
+cache_replacement_policy heap LFUDA
+<% @cache_dir.each do |line| %>
+cache_dir <%= line %>
+<% end -%>
+maximum_object_size <%= @max_obj_size %> MB
+
+<% @access_log.each do |line| %>
+access_log <%= line %> 
+<% end -%>
+cache_log <%= @cache_log %>
+cache_store_log <%= @cache_store_log %>
+logfile_rotate <%= @logfile_rotate %>
+
+ftp_sanitycheck on
+
+<% @cache.each do |line| %>
+cache <%= line %>
+<% end -%>
+
+<% @refresh_pattern.each do |line| %>
+refresh_pattern <%= line %>
+<% end -%>
+refresh_pattern ^ftp:             1440 20% 10080
+refresh_pattern ^gopher:          1440  0%  1440
+refresh_pattern -i (/cgi-bin/|\?)    0  0%     0
+refresh_pattern .                   10 20%  4320
+
+half_closed_clients off
+
+cache_mgr <%= @cache_mgr %>
+visible_hostname <%= @visible_hostname %>
+unique_hostname <%= @hostname %>
+
+<% @snmp_access.each do |line| %>
+snmp_access <%= line %>
+<% end -%>
+
+log_icp_queries <%= @log_icp_queries %>
+maximum_icp_query_timeout <%= @max_icp_query_timeout %>
+
+error_directory <%= @error_directory %>
+
+<% @deny_info.each do |line| %>
+deny_info <%= line %>
+<% end -%>
+
+<% @always_direct.each do |line| %>
+always_direct <%= line %>
+<% end -%>
+
+<% @never_direct.each do |line| %>
+never_direct <%= line %>
+<% end -%>
+
+append_domain .<%= @domain %>
+
+cachemgr_passwd <%= @cache_pwd %> config offline_toggle shutdown
+coredump_dir <%= @coredump_dir %>
+
